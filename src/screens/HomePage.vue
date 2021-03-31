@@ -32,8 +32,16 @@
             type="email"
             class="email-input"
             placeholder="Type your email address here..."
+            v-model="email"
           />
           <span class="icon-arrow-right"></span>
+        </div>
+        <div
+          class="error-message"
+          v-for="(error, index) in emailErrors"
+          :key="index"
+        >
+          {{ error }}
         </div>
         <div class="tos">
           <input type="checkbox" class="checkbox" />
@@ -57,6 +65,29 @@
 <script>
 export default {
   name: "HomePage",
+  data() {
+    return {
+      email: "",
+      emailErrors: {
+        mustBeEmailMessage: "",
+      },
+    };
+  },
+  methods: {
+    validEmail: function(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+  },
+  watch: {
+    email(newValue) {
+      if (!this.validEmail(newValue)) {
+        this.emailErrors["mustBeEmailMessage"] = "This should be a valid email";
+      } else {
+        this.emailErrors["mustBeEmailMessage"] = "";
+      }
+    },
+  },
 };
 </script>
 
@@ -156,6 +187,9 @@ $font-family-secondary:'Arial'
                 align-self: center
                 color: $black-color
                 opacity: 0.3
+        .error-message
+          color: red
+          font-size: 1.6rem
         .tos
             display: flex
             flex-direction: row
