@@ -33,23 +33,40 @@
             class="email-input"
             placeholder="Type your email address here..."
             v-model="email"
+            ref="emailInput"
           />
-          <span class="icon-arrow-right"></span>
+          <button type="submit" class="arrow-button">
+            <span
+              class="icon-arrow-right"
+              :class="[{ active: submitActive }]"
+            ></span>
+          </button>
         </div>
-        <div class="error-container">
-          <div
-            class="error-message"
-            v-for="(error, index) in emailErrors"
-            :key="index"
-          >
-            {{ error }}
+        <div v-if="errors.email.active">
+          <div class="error-container">
+            <div
+              class="error-message"
+              v-for="(error, index) in errors.email.rules"
+              :key="index"
+            >
+              <div v-if="!error.value">
+                {{ error.errorMessage }}
+              </div>
+            </div>
           </div>
         </div>
         <div class="tos">
-          <input type="checkbox" class="checkbox" />
+          <input type="checkbox" class="checkbox" v-model="tos" />
           <div class="tos-message">
             I agree to <span class="tos-message-link">terms of service</span>
           </div>
+        </div>
+        <div
+          v-for="(error, index) in errors.tos.rules"
+          :key="index"
+          class="error-message"
+        >
+          <div v-if="!error.value">{{ error.errorMessage }}</div>
         </div>
       </form>
       <hr class="horizontal-seperator-form-social" />
@@ -67,10 +84,53 @@
 <script>
 export default {
   name: "HomePage",
+  mounted() {
+    this.$refs.emailInput.addEventListener(
+      "input",
+      () => {
+        this.errors.email.active = true;
+      },
+      { once: true }
+    );
+  },
   data() {
     return {
       email: "",
-      emailErrors: {},
+      tos: true,
+      errors: {
+        email: {
+          active: false,
+          emailValid: function() {
+            return Object.entries(this.rules).every(([, value]) => value.value);
+          },
+          rules: {
+            valid: {
+              value: false,
+              errorMessage: "Please provide a valid e-mail address",
+            },
+            notEmpty: {
+              value: false,
+              errorMessage: "Email address is required",
+            },
+            notColombia: {
+              value: false,
+              errorMessage:
+                "We are not accepting subscriptions from Colombia emails",
+            },
+          },
+        },
+        tos: {
+          tosValid: function() {
+            return Object.entries(this.rules).every(([, value]) => value.value);
+          },
+          rules: {
+            checked: {
+              value: true,
+              errorMessage: "You must accept the terms and conditions",
+            },
+          },
+        },
+      },
     };
   },
   methods: {
@@ -86,21 +146,28 @@ export default {
   watch: {
     email(newValue) {
       if (!this.validEmail(newValue)) {
-        this.emailErrors["invalid"] = "Input must be a valid email";
+        this.errors.email.rules.valid.value = false;
       } else {
-        this.emailErrors["invalid"] = "";
+        this.errors.email.rules.valid.value = true;
       }
       if (newValue === "") {
-        this.emailErrors["empty"] = "Email can not be empty";
+        this.errors.email.rules.notEmpty.value = false;
       } else {
-        this.emailErrors["empty"] = "";
+        this.errors.email.rules.notEmpty.value = true;
       }
       if (this.emailFromColombia(newValue)) {
-        this.emailErrors["fromColombia"] =
-          "We are not currently accepting emails from colombia";
+        this.errors.email.rules.notColombia.value = false;
       } else {
-        this.emailErrors["fromColombia"] = "";
+        this.errors.email.rules.notColombia.value = true;
       }
+    },
+    tos(newValue) {
+      this.errors.tos.rules.checked.value = newValue;
+    },
+  },
+  computed: {
+    submitActive() {
+      return this.errors.email.emailValid() && this.errors.tos.tosValid();
     },
   },
 };
@@ -121,6 +188,9 @@ $font-weight-primary:400
 $font-family-secondary:'Arial'
 
 //Mobile first
+.error-message
+    color: red
+    font-size: 1.6rem
 .base-container
     height: 100vh
     width: 100vw
@@ -183,6 +253,7 @@ $font-family-secondary:'Arial'
             font-size: 1rem
             flex-direction: row
             border: 1px solid #E3E3E4
+            margin-bottom: 2rem
             .band
                 width: 1.3%
                 background-color: #4066A5
@@ -196,20 +267,22 @@ $font-family-secondary:'Arial'
                 font-weight: 400
                 line-height: 2.4rem
                 margin: 1.125em 0.625em 1.125em 0.93em
+            .arrow-button
+              border: none
+              background: inherit
+              outline: none
             .icon-arrow-right
                 font-size: 2.7rem
                 align-self: center
                 color: $black-color
                 opacity: 0.3
+            .active
+              color: blue
         .error-container
-            height: 4rem
-            .error-message
-              color: red
-              font-size: 1.6rem
+            height: 2rem
         .tos
             display: flex
             flex-direction: row
-            margin-bottom: 2rem
             .checkbox
                 width: 8.8%
                 height: 26px
@@ -256,6 +329,9 @@ $font-family-secondary:'Arial'
 
 //slightly larger screens
 @media screen and ( min-width: 1024px)
+    .error-message
+        color: red
+        font-size: 1.6rem
     .base-container
         grid-template-rows: 16% auto
         grid-template-columns: max(511px,35.5%) auto
@@ -297,7 +373,7 @@ $font-family-secondary:'Arial'
                 top: 20px
                 font-size: 1rem
                 flex-direction: row
-                margin: 0 2em 0 2em
+                margin: 0 2em 2rem 2em
                 border: 1px solid #E3E3E4
                 .band
                     width: 0.6%
@@ -312,13 +388,9 @@ $font-family-secondary:'Arial'
                     line-height: 2.4rem
                     margin: 1.125em 4em 1.125em 0.93em
             .error-container
-                height: 4rem
-                .error-message
-                    color: red
-                    font-size: 1.6rem
+                height: 2rem
             .tos
                 padding-top: 40px
-                margin-bottom: 40px
                 .checkbox
                     width: 7%
                     height: 24px
