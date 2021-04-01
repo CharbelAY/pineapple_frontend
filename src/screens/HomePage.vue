@@ -36,12 +36,14 @@
           />
           <span class="icon-arrow-right"></span>
         </div>
-        <div
-          class="error-message"
-          v-for="(error, index) in emailErrors"
-          :key="index"
-        >
-          {{ error }}
+        <div class="error-container">
+          <div
+            class="error-message"
+            v-for="(error, index) in emailErrors"
+            :key="index"
+          >
+            {{ error }}
+          </div>
         </div>
         <div class="tos">
           <input type="checkbox" class="checkbox" />
@@ -68,23 +70,36 @@ export default {
   data() {
     return {
       email: "",
-      emailErrors: {
-        mustBeEmailMessage: "",
-      },
+      emailErrors: {},
     };
   },
   methods: {
     validEmail: function(email) {
-      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    emailFromColombia(email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+(co)))$/;
       return re.test(email);
     },
   },
   watch: {
     email(newValue) {
       if (!this.validEmail(newValue)) {
-        this.emailErrors["mustBeEmailMessage"] = "This should be a valid email";
+        this.emailErrors["invalid"] = "Input must be a valid email";
       } else {
-        this.emailErrors["mustBeEmailMessage"] = "";
+        this.emailErrors["invalid"] = "";
+      }
+      if (newValue === "") {
+        this.emailErrors["empty"] = "Email can not be empty";
+      } else {
+        this.emailErrors["empty"] = "";
+      }
+      if (this.emailFromColombia(newValue)) {
+        this.emailErrors["fromColombia"] =
+          "We are not currently accepting emails from colombia";
+      } else {
+        this.emailErrors["fromColombia"] = "";
       }
     },
   },
@@ -168,7 +183,6 @@ $font-family-secondary:'Arial'
             font-size: 1rem
             flex-direction: row
             border: 1px solid #E3E3E4
-            margin-bottom: 2rem
             .band
                 width: 1.3%
                 background-color: #4066A5
@@ -187,9 +201,11 @@ $font-family-secondary:'Arial'
                 align-self: center
                 color: $black-color
                 opacity: 0.3
-        .error-message
-          color: red
-          font-size: 1.6rem
+        .error-container
+            height: 4rem
+            .error-message
+              color: red
+              font-size: 1.6rem
         .tos
             display: flex
             flex-direction: row
@@ -237,11 +253,6 @@ $font-family-secondary:'Arial'
     .base-container
         grid-template-rows: 10% 10% auto auto
 
-//slightly larger screens
-// @media screen and ( min-width: 780px)
-//     .base-container
-//         .top-bar-container
-//             background-color: green
 
 //slightly larger screens
 @media screen and ( min-width: 1024px)
@@ -286,7 +297,7 @@ $font-family-secondary:'Arial'
                 top: 20px
                 font-size: 1rem
                 flex-direction: row
-                margin: 0 2em 2em 2em
+                margin: 0 2em 0 2em
                 border: 1px solid #E3E3E4
                 .band
                     width: 0.6%
@@ -300,6 +311,11 @@ $font-family-secondary:'Arial'
                     font-weight: 400
                     line-height: 2.4rem
                     margin: 1.125em 4em 1.125em 0.93em
+            .error-container
+                height: 4rem
+                .error-message
+                    color: red
+                    font-size: 1.6rem
             .tos
                 padding-top: 40px
                 margin-bottom: 40px
