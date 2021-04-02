@@ -35,7 +35,7 @@
             v-model="email"
             ref="emailInput"
           />
-          <button type="submit" class="arrow-button">
+          <button type="submit" class="arrow-button" :disabled="!submitActive">
             <span
               class="icon-arrow-right"
               :class="[{ active: submitActive }]"
@@ -180,6 +180,7 @@ $black-color: #131821
 $dark-gray-color:#6A707B
 $light-gray-color:#E3E3E4
 $dark-white-color:#F2F5FA
+$shadow-color:#D3D3D3
 
 //Base fonts
 $font-size: 10px
@@ -252,8 +253,12 @@ $font-family-secondary:'Arial'
             display: flex
             font-size: 1rem
             flex-direction: row
-            border: 1px solid #E3E3E4
+            border: 1px solid $light-gray-color
             margin-bottom: 2rem
+            &:focus-within
+              box-shadow: 0 0 5pt 0.5pt $shadow-color
+            &:hover
+              border: 1px solid #4066A5
             .band
                 width: 1.3%
                 background-color: #4066A5
@@ -277,7 +282,8 @@ $font-family-secondary:'Arial'
                 color: $black-color
                 opacity: 0.3
             .active
-              color: blue
+              color: $blue-color
+              opacity: 1
         .error-container
             height: 2rem
         .tos
