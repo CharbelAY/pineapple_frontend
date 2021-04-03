@@ -25,17 +25,27 @@
       <div class="subheading">
         Subscribe to our newsletter and get 10% discount on pineapple glasses
       </div>
-      <form action="">
+      <form
+        ref="subscriptionForm"
+        method="post"
+        action="http://localhost:8080/addemail"
+      >
         <div class="email-input-container">
           <div class="band"></div>
           <input
             type="email"
+            id="email"
+            name="email"
             class="email-input"
             placeholder="Type your email address here..."
             v-model="email"
             ref="emailInput"
           />
-          <button type="submit" class="arrow-button" :disabled="!submitActive">
+          <button
+            class="arrow-button"
+            :disabled="!submitActive"
+            @click="submitForm"
+          >
             <span
               class="icon-arrow-right"
               :class="[{ active: submitActive }]"
@@ -56,7 +66,13 @@
           </div>
         </div>
         <div class="tos">
-          <input type="checkbox" class="checkbox" v-model="tos" />
+          <input
+            type="checkbox"
+            id="tos"
+            name="tos"
+            class="checkbox"
+            v-model="tos"
+          />
           <div class="tos-message">
             I agree to <span class="tos-message-link">terms of service</span>
           </div>
@@ -141,6 +157,10 @@ export default {
     emailFromColombia(email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+(co)))$/;
       return re.test(email);
+    },
+    submitForm(e) {
+      e.preventDefault();
+      console.log(this.$refs.subscriptionForm.submit());
     },
   },
   watch: {
