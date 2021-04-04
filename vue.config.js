@@ -4,6 +4,7 @@ module.exports = {
       sass: {
         prependData: `
             @import "@/styles/_variables.sass"
+            @import "@/styles/_icons_styling.sass"
           `,
       },
     },

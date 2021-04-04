@@ -2,8 +2,8 @@
   <div class="top-bar-container">
     <div class="logo-containers">
       <div class="pineapple-logo-container">
-        <span class="icon-pineapple-logo"></span>
-        <span class="icon-pineapple-text"></span>
+        <span class="icon-logo-pineapple"></span>
+        <span class="icon-text-pineapple"></span>
       </div>
       <div class="pineapple-logo-text-container"></div>
     </div>
@@ -34,9 +34,9 @@ export default {};
     .logo-containers
         margin: 2.6% 0 0 5.3%
         .pineapple-logo-container
-            .icon-pineapple-logo
+            .icon-logo-pineapple
                 font-size: 4rem
-            .icon-pineapple-text
+            .icon-text-pineapple
                 font-size: 1.6rem
                 display: none
     .navigation-list
@@ -68,9 +68,9 @@ export default {};
             .pineapple-logo-container
                 display: flex
                 align-items: flex-end
-                .icon-pineapple-logo
+                .icon-logo-pineapple
                     font-size: 3.5rem
-                .icon-pineapple-text
+                .icon-text-pineapple
                     margin-left: 1.3rem
                     font-size: 1.6rem
                     display: inherit
