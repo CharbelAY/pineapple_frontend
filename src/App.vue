@@ -12,6 +12,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import url("./icomoon/style.css");
+<style lang="sass">
+@import url("./icomoon/style.css")
 </style>
