@@ -1,9 +1,5 @@
 <template>
-  <form
-    ref="subscriptionForm"
-    method="post"
-    action="http://localhost:8080/addemail"
-  >
+  <form ref="subscriptionForm" v-on:submit.prevent="submitForm">
     <div class="email-input-container">
       <div class="band"></div>
       <input
@@ -15,11 +11,7 @@
         v-model="email"
         ref="emailInput"
       />
-      <button
-        class="arrow-button"
-        :disabled="!submitActive"
-        @click="submitForm"
-      >
+      <button class="arrow-button" :disabled="!submitActive">
         <span
           class="icon-arrow-right"
           :class="[{ active: submitActive }]"
@@ -121,9 +113,18 @@ export default {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+(co)))$/;
       return re.test(email);
     },
-    submitForm(e) {
-      e.preventDefault();
-      console.log(this.$refs.subscriptionForm.submit());
+    submitForm() {
+      let request = {
+        email: this.$refs.subscriptionForm.elements["email"].value,
+      };
+      let headers = {
+        "Content-Type": "application/json",
+      };
+      this.$http
+        .post("http://localhost:8080/addemail", request, { headers: headers })
+        .then((response) => {
+          console.log(response);
+        });
     },
   },
   watch: {
