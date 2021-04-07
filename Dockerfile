@@ -1,6 +1,5 @@
 FROM node:lts-alpine
 
-RUN npm install -g @vue/cli-service
 RUN npm install -g http-server
 
 WORKDIR /app
@@ -11,6 +10,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8080
+RUN npm run build
 
-CMD ["npm", "run", "serve"]
+EXPOSE 8080
+CMD [ "http-server", "dist" ]
