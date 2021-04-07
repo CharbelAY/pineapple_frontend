@@ -1,5 +1,5 @@
 services:
-  backend:
+  frontend:
     container_name: magebit_frontend
     build:
       context: .
