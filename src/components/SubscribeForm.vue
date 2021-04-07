@@ -117,14 +117,8 @@ export default {
       let request = {
         email: this.$refs.subscriptionForm.elements["email"].value,
       };
-      let headers = {
-        "Content-Type": "application/json",
-      };
-      this.$http
-        .post("http://localhost:8080/addemail", request, { headers: headers })
-        .then((response) => {
-          console.log(response);
-        });
+
+      this.$emit("formSubmitted", request);
     },
   },
   watch: {

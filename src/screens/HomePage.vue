@@ -2,8 +2,14 @@
   <div class="base-container">
     <top-bar></top-bar>
     <div class="content">
-      <subscribe-invitation></subscribe-invitation>
-      <subscribe-form></subscribe-form>
+      <div v-if="!subscribed">
+        <subscribe-invitation></subscribe-invitation>
+        <h2 v-if="errorMessage != ''" class="error">{{ errorMessage }}</h2>
+        <subscribe-form @formSubmitted="submitForm"></subscribe-form>
+      </div>
+      <div v-else>
+        <subscribe-success></subscribe-success>
+      </div>
       <hr class="horizontal-seperator-form-social" />
       <social-links></social-links>
     </div>
@@ -16,6 +22,7 @@ import TopBar from "../components/TopBar.vue";
 import SubscribeInvitation from "../components/SubscribeInvitation.vue";
 import SubscribeForm from "../components/SubscribeForm.vue";
 import SocialLinks from "../components/SocialLinks.vue";
+import SubscribeSuccess from "../components/SubscribeSuccess.vue";
 export default {
   name: "HomePage",
   components: {
@@ -23,11 +30,38 @@ export default {
     SubscribeInvitation,
     SubscribeForm,
     SocialLinks,
+    SubscribeSuccess,
+  },
+  data() {
+    return {
+      subscribed: false,
+      errorMessage: "",
+    };
+  },
+  methods: {
+    submitForm(data) {
+      let headers = {
+        "Content-Type": "application/json",
+      };
+      this.$http
+        .post("http://localhost:8080/addemail", data, { headers: headers })
+        .then((response) => {
+          if (response.data["value"] === "Success") {
+            this.subscribed = true;
+            console.log(response.data["value"]);
+          } else {
+            this.errorMessage = response.data["value"];
+          }
+        });
+    },
   },
 };
 </script>
 
 <style scoped lang="sass">
+
+.error
+  color: red
 
 //Mobile first
 .base-container
