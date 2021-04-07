@@ -1,24 +1,6 @@
 # magebit_frontend_test
 
-## Project setup
-```
-npm install
-```
+## To start the frontend:
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+    * Run docker-compose up inside the root folder
+    * Navigate in the browser to localhost:8081/
